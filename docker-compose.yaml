@@ -1,0 +1,27 @@
+services:
+  avorion:
+    image: andrewsav/avorion
+    container_name: avorion
+    restart: unless-stopped
+    environment:
+      SERVER_ARGS: >-
+        --galaxy-name avorion_galaxy
+        --port 27000
+        --query-port 27003
+        --steam-query-port 27020
+        --steam-master-port 27021
+      #SKIP_UPDATE: 1 # uncomment to skip updading the game server with steamcmd on container startup
+      #IGNORE_UPDATE_FAILURE: 1 # uncomment to skip exiting if update failed, the previous version of server will run
+    volumes:
+      - ./server:/server
+      - ./data:/root/.avorion
+      # optional, to chache steamcmd to prevent re-downloading it each container startup
+      - ./steam:/root/.local/share/Steam
+    ports:
+      - 27000:27000
+      - 27003:27003/udp
+      - 27020:27020/udp
+      - 27021:27021/udp
+    # those two lines are so that "docker compose attach avorion" somewhat works
+    stdin_open: true
+    tty: true
